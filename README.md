@@ -29,8 +29,7 @@
 
 Describe briefly how you created/activated your Python environment:
 
-**Tool used:**  
-_[venv / conda / system Python]_
+**Tool used:**  venv
 
 **Key commands you ran:**
 ```bash
