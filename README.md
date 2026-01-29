@@ -7,19 +7,15 @@
 
 ## 1. System Information
 
-**Laptop model:**  
-_[LAPTOP-50SB5BCQ]_
+**Laptop model:**  LAPTOP-50SB5BCQ
 
-**CPU / RAM:**  
-_[11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz，16GB RAM]_
+**CPU / RAM:**  11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz，16GB RAM
 
-**Host OS:**  
-_[Windows 10]_
+**Host OS:**  Windows 10
 
 **Linux/ROS environment type:**  
-_[Choose one:]_
 - [ ] Dual-boot Ubuntu
-- [√ ] WSL2 Ubuntu
+- [√] WSL2 Ubuntu
 - [ ] Ubuntu in VM (UTM/VirtualBox/VMware/Parallels)
 - [ ] Docker container
 - [ ] Lab PC
