@@ -11,15 +11,15 @@
 _[LAPTOP-50SB5BCQ]_
 
 **CPU / RAM:**  
-_[e.g., Intel Core i7-11800H, 16GB RAM]_
+_[11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz，16GB RAM]_
 
 **Host OS:**  
-_[Windows 11 / macOS / Ubuntu 22.04]_
+_[Windows 10]_
 
 **Linux/ROS environment type:**  
 _[Choose one:]_
 - [ ] Dual-boot Ubuntu
-- [ ] WSL2 Ubuntu
+- [√ ] WSL2 Ubuntu
 - [ ] Ubuntu in VM (UTM/VirtualBox/VMware/Parallels)
 - [ ] Docker container
 - [ ] Lab PC
