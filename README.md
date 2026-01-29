@@ -153,9 +153,8 @@ OVERALL RESULT: PASS
 ```
 
 **Screenshot:**  
-_[Include one screenshot showing both tests passing]_
-
-![Python Tests Passing](path/to/your/screenshot.png)
+_[<img width="2999" height="1937" alt="Python Test Passing" src="https://github.com/user-attachments/assets/10aa9d37-9019-4f60-83d0-a0a0edb46ae4" />
+]_
 
 ---
 
