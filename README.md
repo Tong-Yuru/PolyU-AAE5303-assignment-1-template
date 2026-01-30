@@ -236,54 +236,76 @@ ros2 launch env_check_pkg env_check.launch.py
 
 > **Note:** Write 2–3 issues, even if small. This section is crucial — it demonstrates understanding and problem-solving.
 
-### Issue 1: [Write the exact error message or problem]
+### Issue 1:Failed to create Python virtual environment (error: "ensurepip is not available")
 
 **Cause / diagnosis:**  
-_[Explain what you think caused it]_
+My Ubuntu 22.04 system lacked the python3.10-venv package, which is required to create Python virtual environments using python3 -m venv.
 
 **Fix:**  
-_[The exact command/config change you used to solve it]_
+Install the missing package, then recreate the virtual environment:
 
 ```bash
-[Your fix command/code here]
+# Install the required venv package
+sudo apt install python3.10-venv -y
+# Delete the incomplete virtual environment
+rm -rf .venv
+# Recreate the virtual environment
+python3 -m venv .venv
 ```
 
 **Reference:**  
-_[Official ROS docs? StackOverflow? AI assistant? Something else?]_
+System error message prompt + AI assistant.
 
 ---
 
-### Issue 2: [Another real error or roadblock]
+### Issue 2: ROS 2 workspace build failed (error: "ROS 2 workspace build failed (exit 1)")
 
 **Cause / diagnosis:**  
-_[Explain what you think caused it]_
+Residual files (build, install, log) from a previous failed build caused conflicts, and I was missing ROS 2 C++ dependencies needed for the env_check_pkg package.
 
 **Fix:**  
-_[The exact command/config change you used to solve it]_
+Delete residual build files and install required ROS 2 dependencies:
 
 ```bash
-[Your fix command/code here]
+# Navigate to the ROS 2 workspace
+cd ~/PolyU-AAE5303-env-smork-test/ros2_ws
+# Delete residual build files
+rm -rf build install log
+# Install ROS 2 C++ dependencies
+sudo apt install -y ros-humble-rclcpp ros-humble-std-msgs
+# Rebuild the package
+colcon build --packages-select env_check_pkg
 ```
 
 **Reference:**  
-_[Official ROS docs? StackOverflow? AI assistant? Something else?]_
+System error message prompt + AI assistant.
 
 ---
 
-### Issue 3 (Optional): [Title]
+### Issue 3 (Optional):Colcon build failed (error: "ModuleNotFoundError: No module named 'catkin_pkg'")
 
 **Cause / diagnosis:**  
-_[Explain what you think caused it]_
+The catkin_pkg module (required for parsing ROS package files) was missing, and I was running the build in a Python virtual environment (which couldn’t access the system-level catkin_pkg).
 
 **Fix:**  
-_[The exact command/config change you used to solve it]_
+Install catkin_pkg (system + virtual environment) and build outside the virtual environment:
 
 ```bash
-[Your fix command/code here]
+# Install system-level catkin_pkg
+sudo apt install -y python3-catkin-pkg
+# Install catkin_pkg in the virtual environment
+pip install catkin-pkg
+# Exit the virtual environment
+deactivate
+# Reload ROS 2 environment and rebuild
+source /opt/ros/humble/setup.bash
+cd ~/PolyU-AAE5303-env-smork-test/ros2_ws
+rm -rf build install log
+colcon build --packages-select env_check_pkg
 ```
 
 **Reference:**  
-_[Official ROS docs? StackOverflow? AI assistant? Something else?]_
+AI assistant + ROS 2 official documentation.
 
 ---
 
@@ -297,14 +319,25 @@ Choose one of the issues above and document how you used AI to solve it.
 
 **Your prompt:**
 ```
-[Copy-paste your actual message to the AI, not a summary]
+执行“colcon build --packages-select env_check_pkg”后系统显示：Starting >>> env_check_pkg --- stderr: env_check_pkg Traceback (most recent call last): File "/opt/ros/humble/share/ament_cmake_core/cmake/core/package_xml_2_cmake.py", line 22, in <module> from catkin_pkg.package import parse_package_string ModuleNotFoundError: No module named 'catkin_pkg' CMake Error at /opt/ros/humble/share/ament_cmake_core/cmake/core/ament_package_xml.cmake:95 (message): execute_process(/home/aae/PolyU-AAE5303-env-smork-test/.venv/bin/python3 /opt/ros/humble/share/ament_cmake_core/cmake/core/package_xml_2_cmake.py /home/aae/PolyU-AAE5303-env-smork-test/ros2_ws/src/env_check_pkg/package.xml /home/aae/PolyU-AAE5303-env-smork-test/ros2_ws/build/env_check_pkg/ament_cmake_core/package.cmake) returned error code 1 Call Stack (most recent call first): /opt/ros/humble/share/ament_cmake_core/cmake/core/ament_package_xml.cmake:49 (_ament_package_xml) /opt/ros/humble/share/ament_lint_auto/cmake/ament_lint_auto_find_test_dependencies.cmake:31 (ament_package_xml) CMakeLists.txt:28 (ament_lint_auto_find_test_dependencies) --- Failed <<< env_check_pkg [4.53s, exited with code 1] Summary: 0 packages finished [4.99s] 1 package failed: env_check_pkg 1 package had stderr output: env_check_pkg,这是怎么回事啊？我应该怎么改？
 ```
 
 ### 5.2 Key helpful part of the AI's answer
 
 **AI's response (relevant part only):**
 ```
-[Quote only the relevant part of the AI's answer]
+The error happens because: 1) The 'catkin_pkg' module (required for ROS package parsing) is missing. 2) You're in a Python virtual environment, which can't access the system-level 'catkin_pkg'.
+
+Fix steps:
+1. Install 'catkin_pkg' both system-wide and in the virtual environment:
+   sudo apt install -y python3-catkin-pkg
+   pip install catkin-pkg
+2. Exit the virtual environment (run 'deactivate') before building ROS 2 workspace.
+3. Reload ROS 2 environment and rebuild:
+   source /opt/ros/humble/setup.bash
+   cd ~/PolyU-AAE5303-env-smork-test/ros2_ws
+   rm -rf build install log
+   colcon build --packages-select env_check_pkg
 ```
 
 ### 5.3 What you changed or ignored and why
@@ -315,18 +348,30 @@ Explain briefly:
 - Did you double-check with official docs?
 
 **Your explanation:**  
-_[Write your analysis here]_
+The AI didn’t recommend anything unsafe.
+I didn’t modify its solution (it matched my environment’s needs).
+I double-checked the "ROS 2 Humble Installation Guide" to confirm that 'catkin_pkg' is a required dependency for package building, which verified the AI’s advice.
 
 ### 5.4 Final solution you applied
 
 Show the exact command or file edit that fixed the problem:
 
 ```bash
-[Your final command/code here]
+# Install system-level catkin_pkg
+sudo apt install -y python3-catkin-pkg
+# Install catkin_pkg in virtual environment
+pip install catkin-pkg
+# Exit virtual environment
+deactivate
+# Reload ROS 2 environment and rebuild
+source /opt/ros/humble/setup.bash
+cd ~/PolyU-AAE5303-env-smork-test/ros2_ws
+rm -rf build install log
+colcon build --packages-select env_check_pkg
 ```
 
 **Why this worked:**  
-_[Brief explanation]_
+Installing 'catkin_pkg' resolved the missing module error. Exiting the virtual environment let ROS 2 access system-level dependencies, and deleting residual build files eliminated conflicts—allowing the workspace to build successfully.
 
 ---
 
@@ -341,7 +386,7 @@ Short but thoughtful:
 
 **Your reflection:**
 
-_[Write your 3-5 sentence reflection here]_
+Configuring robotics environments taught me that small details (like virtual environment vs. system Python) can break complex tools like ROS 2, so isolating environment contexts is critical. I was surprised by how interconnected dependencies are—missing one small package (like 'python3.10-venv') could halt the entire setup. Next time, I’ll read error logs more carefully first (instead of panicking) and include environment context (e.g., "I’m in a virtual environment") in AI prompts to get more targeted advice. I now feel moderately confident debugging basic ROS/Python issues, as I’ve learned to trace errors to missing dependencies or environment conflicts.
 
 ---
 
@@ -350,13 +395,13 @@ _[Write your 3-5 sentence reflection here]_
 ✅ **I confirm that I performed this setup myself and all screenshots/logs reflect my own environment.**
 
 **Name:**  
-_[Your name]_
+Tong Yuru
 
 **Student ID:**  
-_[Your student ID]_
+25106011G
 
 **Date:**  
-_[Date of submission]_
+2026/1/30
 
 ---
 
@@ -364,13 +409,13 @@ _[Date of submission]_
 
 Before submitting, ensure you have:
 
-- [ ] Filled in all system information
-- [ ] Included actual terminal outputs (not just screenshots)
-- [ ] Provided at least 2 screenshots (Python tests + ROS talker/listener)
-- [ ] Documented 2–3 real problems with solutions
-- [ ] Completed the AI usage section with exact prompts
-- [ ] Written a thoughtful reflection (3–5 sentences)
-- [ ] Signed the declaration
+- [√] Filled in all system information
+- [√] Included actual terminal outputs (not just screenshots)
+- [√] Provided at least 2 screenshots (Python tests + ROS talker/listener)
+- [√] Documented 2–3 real problems with solutions
+- [√] Completed the AI usage section with exact prompts
+- [√] Written a thoughtful reflection (3–5 sentences)
+- [√] Signed the declaration
 
 ---
 
